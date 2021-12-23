@@ -1,2 +1,2 @@
 # SECRETS_MANAGEMENT
-Tools for secrets management
+A tools for secrets management
