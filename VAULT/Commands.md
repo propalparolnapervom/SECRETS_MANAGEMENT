@@ -77,7 +77,9 @@ vault secrets enable -version=2 kv
 ```
 
 
-##### Read/Write secrets
+#### Work with secrets: CLI
+
+[Docs](https://www.vaultproject.io/docs/secrets/kv/kv-v2#writing-reading-arbitrary-data)
 
 Write
 ```
@@ -89,8 +91,11 @@ Read
 vault kv get secret/xbs_first_secret
 ```
 
+#### Work with secrets: API
 
+[Docs](https://www.vaultproject.io/api/secret/kv/kv-v2)
 
+The KV secrets engine has a full HTTP API.
 
 
 
