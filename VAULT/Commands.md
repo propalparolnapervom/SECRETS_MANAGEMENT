@@ -54,10 +54,42 @@ vault status
 
 ## Seal/Unseal
 
+
+
+### Unseal
+
+[Docs](https://www.vaultproject.io/docs/concepts/seal#unsealing)
+This process is stateful: each key can be entered via multiple mechanisms on multiple computers and it will work.
+
+
+Once a Vault node is unsealed, it remains unsealed until one of these things happens:
+
+- It is resealed via the API (see below).
+- The server is restarted.
+- Vault's storage layer encounters an unrecoverable error.
+
+
 Unseal
 ```
 vault operator unseal
 ```
+
+### Seal
+[Docs](https://www.vaultproject.io/docs/concepts/seal#sealing)
+
+> NOTE: Sealing only requires a single operator with root privileges.
+
+Seal
+```
+vault operator seal
+```
+
+
+### Auto Unseal
+[Docs](https://www.vaultproject.io/docs/concepts/seal#auto-unseal)
+
+This feature delegates the responsibility of securing the unseal key from users to a trusted device or service. At startup Vault will connect to the device or service implementing the seal and ask it to decrypt the master key Vault read from storage.
+
 
 
 
@@ -80,6 +112,13 @@ vault secrets enable -version=2 kv
 #### Work with secrets: CLI
 
 [Docs](https://www.vaultproject.io/docs/secrets/kv/kv-v2#writing-reading-arbitrary-data)
+[Docs: Convenient list of commands](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started#key-value-secrets-engine)
+
+List (all secrets under the `secret`, which is root path for `K/V` engine)
+```
+# vault kv list <some/path/starting/from/'secret'>
+vault kv list secret
+```
 
 Write
 ```
