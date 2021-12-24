@@ -138,4 +138,120 @@ The KV secrets engine has a full HTTP API.
 
 
 
+## Namespaces
+A Vault administrator can lock the API for particular namespaces.
+
+### Lock
+[Docs](https://www.vaultproject.io/docs/concepts/namespace-api-lock#locking)
+
+> **NOTE**: An `unlock key` will be returned, which can be used to unlock the API for that namespace. 
+> Preserve this key to unlock the API in the future!
+```
+vault namespace lock
+```
+
+
+### Unlock
+[Docs](https://www.vaultproject.io/docs/concepts/namespace-api-lock#unlocking)
+
+> **NOTE**: 
+> 1) In general, an `unlock key` is required to unlock the API. 
+> This is the same as the `unlock key` provided when the namespace was locked.
+> 
+> 2) The `unlock key` requirement can be overriden by using a `root token` with the unlock request.
+```
+vault namespace unlock
+```
+
+
+## Authentication
+
+[Docs: Higlevel](https://www.vaultproject.io/docs/concepts/auth)
+
+[Docs: Full](https://www.vaultproject.io/docs/auth)
+
+Vault supports multiple auth methods simultaneously.
+
+> **NOTE**: Authentication works by verifying your identity and then generating a `token` to associate with that identity.
+> For example, even though you may authenticate using something like `GitHub`, Vault generates a unique access `token` for you to use for future requests.
+
+
+### General
+
+Describe auth method that was used to create specific authentication (for example, `auth/xbs_first_auth`)
+```
+vault path-help auth/xbs_first_auth
+```
+
+### Userpass (basic auth)
+
+Create
+```
+vault write sys/auth/xbs_first_auth type=userpass
+```
+
+
+### Token
+
+> **NOTE**: Here is only info how to use token you already have.
+> Read appropriate block to get more info about `tokens` as core method for authentication within Vault
+
+Authenticate
+```
+# CLI
+vault login token=<token>
+
+      # OR
+      
+# API: Option 1
+curl \
+    --header "Authorization: Bearer <INSERT_VAULT_TOKEN_HERE>" \
+    --request LIST \
+    http://127.0.0.1:8200/v1/auth/token/accessors
+    
+      # OR
+      
+# API: Option 2
+curl \
+    --header "X-Vault-Token: <INSERT_VAULT_TOKEN_HERE>" \
+    --request LIST \
+    http://127.0.0.1:8200/v1/auth/token/accessors
+```
+
+### GitHub
+
+Authenticate
+```
+vault login -method=github token=<token>
+
+      # OR
+      
+vault login -method=github
+```
+
+
+
+## Tokens
+
+[Docs: Highlevel](https://www.vaultproject.io/docs/concepts/tokens#tokens)
+[Docs: Full](https://www.vaultproject.io/docs/auth/token)
+[Docs: API](https://www.vaultproject.io/api/auth/token)
+
+
+
+> **NOTE**: Since tokens are considered opaque values, their structure is undocumented and subject to change.
+
+`Tokens` are the core method for authentication within Vault. 
+
+`Tokens` can be used directly or `auth method`s can be used to dynamically generate `tokens` based on external identities.
+
+
+
+
+
+
+
+
+
+
 
