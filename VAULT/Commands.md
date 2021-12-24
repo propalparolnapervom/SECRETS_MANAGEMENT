@@ -60,3 +60,38 @@ vault operator unseal
 ```
 
 
+
+## Secret Engines
+
+
+### Key/Value
+
+#### Enable engine
+
+```
+vault secrets enable kv-v2
+
+      # OR
+
+vault secrets enable -version=2 kv
+```
+
+
+##### Read/Write secrets
+
+Write
+```
+vault kv put secret/xbs_first_secret_via_cli xbs_key_name=xbs_key_value
+```
+
+Read
+```
+vault kv get secret/xbs_first_secret
+```
+
+
+
+
+
+
+
