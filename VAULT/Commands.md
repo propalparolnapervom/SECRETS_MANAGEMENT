@@ -51,6 +51,15 @@ vault status
       HA Enabled      false
 ```
 
+List configured auth methods
+```
+vault auth list
+
+      Path               Type        Accessor                  Description
+      ----               ----        --------                  -----------
+      token/             token       auth_token_e34b827e       token based credentials
+      xbs_first_auth/    userpass    auth_userpass_f751c1c1    n/a
+```
 
 ## Seal/Unseal
 
