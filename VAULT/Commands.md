@@ -51,15 +51,30 @@ vault status
       HA Enabled      false
 ```
 
-List configured auth methods
+Information regarding the token you eventually used to log in
 ```
-vault auth list
+vault token lookup
 
-      Path               Type        Accessor                  Description
-      ----               ----        --------                  -----------
-      token/             token       auth_token_e34b827e       token based credentials
-      xbs_first_auth/    userpass    auth_userpass_f751c1c1    n/a
+      Key                 Value
+      ---                 -----
+      accessor            mBTRDLasdfXamfQI3G
+      creation_time       1640345928
+      creation_ttl        0s
+      display_name        root
+      entity_id           n/a
+      expire_time         <nil>
+      explicit_max_ttl    0s
+      id                  s.SlWawhMmO0yrdddYiM33pa
+      meta                <nil>
+      num_uses            0
+      orphan              true
+      path                auth/token/root
+      policies            [root]
+      ttl                 0s
+      type                service
 ```
+
+
 
 ## Seal/Unseal
 
@@ -187,10 +202,22 @@ Vault supports multiple auth methods simultaneously.
 
 ### General
 
+List configured auth methods
+```
+vault auth list
+
+      Path               Type        Accessor                  Description
+      ----               ----        --------                  -----------
+      token/             token       auth_token_e34b827e       token based credentials
+      xbs_first_auth/    userpass    auth_userpass_f751c1c1    n/a
+```
+
 Describe auth method that was used to create specific authentication (for example, `auth/xbs_first_auth`)
 ```
 vault path-help auth/xbs_first_auth
 ```
+
+
 
 ### Userpass (basic auth)
 
@@ -253,6 +280,73 @@ vault login -method=github
 `Tokens` are the core method for authentication within Vault. 
 
 `Tokens` can be used directly or `auth method`s can be used to dynamically generate `tokens` based on external identities.
+
+
+
+## Policy
+
+### General
+
+To list all registered policies in Vault:
+```
+vault read sys/policy
+
+      # OR
+
+curl \
+  --header "X-Vault-Token: ..." \
+  https://vault.hashicorp.rocks/v1/sys/policy
+```
+
+### Built-in Policies
+
+Vault has two built-in policies: `default` and `root`
+
+
+### Default policy
+The `default` policy is a built-in Vault policy that cannot be removed. 
+
+By default, it is attached to all tokens, but may be explicitly excluded at token creation time by supporting authentication methods.
+
+To view all permissions granted by the default policy on your Vault installation, run:
+```
+vault read sys/policy/default
+```
+
+To disable attachment of the default policy:
+```
+vault token create -no-default-policy
+
+   # OR
+   
+curl \
+  --request POST \
+  --header "X-Vault-Token: ..." \
+  --data '{"no_default_policy": "true"}' \
+  https://vault.hashicorp.rocks/v1/auth/token/create  
+```
+
+
+### Root Policy
+
+The `root` policy is a built-in Vault policy that can not be modified or removed. Any user associated with this policy becomes a root user. A root user can do **anything** within Vault. As such, it is **highly recommended** that you revoke any root tokens before running Vault in production.
+
+> **NOTE**: When a Vault server is first initialized, there always exists one root user. This user is used to do the initial configuration and setup of Vault. After configured, the initial root token should be revoked and more strictly controlled users and authentication should be used.
+
+To revoke a root token, run:
+```
+vault token revoke "<token>"
+
+   # OR
+   
+curl \
+  --request POST \
+  --header "X-Vault-Token: ..." \
+  --data '{"token": "<token>"}' \
+  https://vault.hashicorp.rocks/v1/auth/token/revoke
+```
+
+
 
 
 
