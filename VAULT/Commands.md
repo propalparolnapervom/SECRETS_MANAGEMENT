@@ -119,6 +119,19 @@ This feature delegates the responsibility of securing the unseal key from users 
 
 ## Secret Engines
 
+### General
+
+List all secret engines enabled
+```
+vault secrets list
+
+      Path          Type         Accessor              Description
+      ----          ----         --------              -----------
+      cubbyhole/    cubbyhole    cubbyhole_fc48f28b    per-token private secret storage
+      identity/     identity     identity_5396702b     identity store
+      secret/       kv           kv_d561a5f1           key/value secret storage
+      sys/          system       system_5afc25c6       system endpoints used for control, policy and debugging
+```
 
 ### Key/Value
 
@@ -226,6 +239,8 @@ Create
 vault write sys/auth/xbs_first_auth type=userpass
 ```
 
+### AppRole
+[Example 1: Via curl](https://learn.hashicorp.com/tutorials/vault/getting-started-apis?in=vault/getting-started)
 
 ### Token
 
@@ -287,17 +302,42 @@ vault login -method=github
 
 ### General
 
-To list all registered policies in Vault:
+List all policies
+```
+vault policy list
+```
+
+List system policies (?)
 ```
 vault read sys/policy
 
-      # OR
+   # OR
 
 curl \
   --header "X-Vault-Token: ..." \
   https://vault.hashicorp.rocks/v1/sys/policy
 ```
 
+Import policy from HCL file
+```
+# HCL file example
+#
+# path "secret/dev/team-1/*" {
+#   capabilities = ["create", "update", "read"]
+# }
+# path "secret/dev/global" {
+#   capabilities = ["read"]
+# }
+#
+# vault policy write <POLICY_NAME> <HCL_FILE_PATH>
+
+vault policy write dev-team-1 team-one-policy.hcl
+```
+
+Assign a policy to a token
+```
+vault token create -policy=dev-team-1
+```
 ### Built-in Policies
 
 Vault has two built-in policies: `default` and `root`
