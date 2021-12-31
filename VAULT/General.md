@@ -14,7 +14,8 @@
 
 [API](https://www.vaultproject.io/api)
 
-
+### Study
+[Official docs: Study for a certification](https://learn.hashicorp.com/tutorials/vault/associate-study)
 
 
 
