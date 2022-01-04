@@ -155,7 +155,7 @@ vault write -force auth/approle/role/jenkins-role/secret-id
 The client (in this case, _Jenkins_) uses the `RoleID` and `SecretID` passed by the `admin` to authenticate with _Vault_.
 
 
-To login, use the `auth/approle/login` endpoint by passing the `RoleID` and `SecretID`.
+To **generate** a new token for furhter login, use the `auth/approle/login` endpoint by passing the `RoleID` and `SecretID`.
 ```
 vault write auth/approle/login role_id="5be0c647-7d92-7b29-63fa-f1fe27ad9169" \
     secret_id="2f34adc9-5542-61af-63eb-bed459b6182a"
