@@ -49,6 +49,12 @@ vault status
       Cluster Name    vault-cluster-72b52d71
       Cluster ID      eaa1ff8e-c607-fca6-df97-7b2d4a05725e
       HA Enabled      false
+
+   # OR
+   
+curl http://127.0.0.1:8200/v1/sys/init
+
+      { "initialized": true }
 ```
 
 Information regarding the token you eventually used to log in
