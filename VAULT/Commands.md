@@ -393,11 +393,94 @@ curl \
 ```
 
 
+## Lease
+
+[Docs: General](https://www.vaultproject.io/docs/concepts/lease)
+[Docs: Available Parameters](https://www.vaultproject.io/api-docs/system/leases)
+
+> **NOTE**: With every dynamic secret and service type authentication token, Vault creates a lease: metadata containing information such as a time duration, renewability, and more. 
+> Vault promises that the data will be valid for the given duration, or Time To Live (TTL). 
+> Once the lease is expired, Vault can automatically revoke the data, and the consumer of the secret can no longer be certain that it is valid.
 
 
+> The benefit should be clear: consumers of secrets need to check in with Vault routinely to either renew the lease (if allowed) or request a replacement secret. This makes the Vault audit logs more valuable and also makes key rolling a lot easier.
 
 
+> In addition to renewals, a lease can be revoked. When a lease is revoked, it invalidates that secret immediately and prevents any further renewals. 
 
+> When a token is revoked, Vault will revoke all leases that were created using that token.
+
+
+### List
+
+All types of leases:
+```
+vault list sys/leases/lookup/auth/approle/login
+
+      Keys
+      ----
+      auth/
+```
+
+The leases for `auth` type:
+```
+vault list sys/leases/lookup/auth
+
+      Keys
+      ----
+      auth/
+```
+
+The leases for `approle` `auth` type:
+```
+vault list sys/leases/lookup/auth/approle
+
+      Keys
+      ----
+      login/
+```
+
+The leases for logins of `approle` `auth` type:
+```
+vault list sys/leases/lookup/auth/approle/login
+
+      Keys
+      ----
+      h0c817b0d54735abfe5e12ed6c01d56fb78e755584e3934f360bad6bd383415c0
+      h0e6113599dd06f58ee7e954cbaab6b901c4c85a0b3ed484a5096cdfa700eccb1
+```
+
+### Describe
+
+Describe specific Lease
+```
+# Remember the ID of the necessary Lease
+# (this is everything under `sys/leases/lookup` mount)
+export LEASE_ID="auth/approle/login/h457d2cc67e6901b48b9bd665f6ad4abb67e47c21eee60bfb33c2b491fea9e3b3"
+
+# Describe specified Lease
+vault lease lookup ${LEASE_ID}
+
+      Key             Value
+      ---             -----
+      expire_time     2022-01-04T17:58:39.4583564Z
+      id              auth/approle/login/h457d2cc67e6901b48b9bd665f6ad4abb67e47c21eee60bfb33c2b491fea9e3b3
+      issue_time      2022-01-04T16:58:39.458377Z
+      last_renewal    <nil>
+      renewable       true
+      ttl             16m27s
+```
+
+### Revoke
+
+```
+# Remember the ID of the necessary Lease
+# (this is everything under `sys/leases/lookup` mount)
+export LEASE_ID="auth/approle/login/h21e043a571e5b6ade3d5389c43f7fbf4f6d77bb25e415e43612b170de9109f5f"
+
+# Revoke it
+vault lease revoke ${LEASE_ID}
+```
 
 
 
