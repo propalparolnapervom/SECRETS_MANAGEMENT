@@ -91,7 +91,7 @@ vault read auth/approle/role/jenkins-role
 
 
 
-## Step 3: Get RoleID and SecretID
+## Step 3.1: Get `RoleID`
 
 Retrieve the `RoleID` for the `jenkins-role` role
 ```
@@ -100,8 +100,38 @@ Retrieve the `RoleID` for the `jenkins-role` role
 vault read auth/approle/role/jenkins-role/role-id
 ```
 
+## Step 3.2: Get `SecretID`
 [Docs: Parameters for the SecretID](https://www.vaultproject.io/api/auth/approle#generate-new-secret-id)
+[Docs: Response Wrapping](https://learn.hashicorp.com/tutorials/vault/approle#response-wrap-the-secretid)
 
+### Wrapped
+
+Instead of generating and getting of `SecretID` itself, response wrapping could be used insted (to get a link to the secret id instead of secret itself)
+```
+vault write -wrap-ttl=360s -force auth/approle/role/jenkins-role/secret-id
+
+  Key                              Value
+  ---                              -----
+  wrapping_token:                  s.BW3oUqDf7iGg1x96fccfX5vp
+  wrapping_accessor:               RLzjMCeIR7WbdXcdHO71Bl24
+  wrapping_token_ttl:              6m
+  wrapping_token_creation_time:    2022-01-04 16:49:24.0887075 +0000 UTC
+  wrapping_token_creation_path:    auth/approle/role/jenkins-role/secret-id
+  wrapped_accessor:                f412d75c-e5da-a1fe-c599-1e17cf96cc37
+```
+
+Application then can use this `wrapping_token` to get real `SecretID`
+```
+VAULT_TOKEN="s.BW3oUqDf7iGg1x96fccfX5vp" vault unwrap
+
+  Key                   Value
+  ---                   -----
+  secret_id             2f34adc9-5542-61af-63eb-bed459b6182a
+  secret_id_accessor    f412d75c-e5da-a1fe-c599-1e17cf96cc37
+  secret_id_ttl         0s
+```
+
+### Not wrapped (not recommended)
 Generate a `SecretID` for the `jenkins-role` role
 ```
 # The `auth/approle/role/<ROLE_NAME>/secret-id` endpoint generates a new `SecretID` 
@@ -128,12 +158,12 @@ The client (in this case, _Jenkins_) uses the `RoleID` and `SecretID` passed by 
 To login, use the `auth/approle/login` endpoint by passing the `RoleID` and `SecretID`.
 ```
 vault write auth/approle/login role_id="5be0c647-7d92-7b29-63fa-f1fe27ad9169" \
-    secret_id="96fb4a63-acbb-e617-11ce-3941bd5c6e78"
+    secret_id="2f34adc9-5542-61af-63eb-bed459b6182a"
     
   Key                     Value
   ---                     -----
-  token                   s.MkoyE3tA3joV4mHsglRoUc43
-  token_accessor          AcxkqO62d8yfU0OXimVqWYSW
+  token                   s.u3vlFq406EvWwcbcpTjz1Qya
+  token_accessor          7cnZWtgz7xRQ6zKdipktLNIE
   token_duration          1h
   token_renewable         true
   token_policies          ["default" "jenkins-policy"]
@@ -144,7 +174,7 @@ vault write auth/approle/login role_id="5be0c647-7d92-7b29-63fa-f1fe27ad9169" \
 
 For example, store the generated token value in an environment variable named, `APP_TOKEN`.
 ```
-export APP_TOKEN="s.MkoyE3tA3joV4mHsglRoUc43"
+export APP_TOKEN="s.u3vlFq406EvWwcbcpTjz1Qya"
 ```
 
 
@@ -198,7 +228,20 @@ curl --header "X-Vault-Token: $APP_TOKEN" \
   }
 ```
 
-## Response Wrap the `SecretID`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
