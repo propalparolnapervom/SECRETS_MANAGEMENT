@@ -64,8 +64,8 @@ In this example, you are going to create a role for the app persona (`jenkins` i
 Create an policy named `jenkins-policy`.
 ```
 vault policy write jenkins-policy -<<EOF
-# Read-only permission on secrets stored at 'secret/data/mysql/webapp'
-path "secret/data/mysql/webapp" {
+# Read-only permission on secrets stored at 'secret/mysql/webapp'
+path "secret/mysql/webapp" {
   capabilities = [ "read" ]
 }
 EOF
@@ -210,7 +210,7 @@ VAULT_TOKEN=$APP_TOKEN vault kv get secret/mysql/webapp
 
 ```
 curl --header "X-Vault-Token: $APP_TOKEN" \
-    $VAULT_ADDR/v1/secret/data/mysql/webapp | jq -r ".data"
+    $VAULT_ADDR/v1/secret/mysql/webapp | jq -r ".data"
 
   {
     "data": {
