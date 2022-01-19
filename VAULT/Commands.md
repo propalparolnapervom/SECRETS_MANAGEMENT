@@ -165,7 +165,13 @@ vault kv list secret
 
 Write
 ```
+# Single secret
 vault kv put secret/xbs_first_secret_via_cli xbs_key_name=xbs_key_value
+
+   # OR
+
+# Multiply secrets
+vault kv put secret/xbs_first_secret_via_cli ttl='30s' username='xbs_username' password='xbs_pwd'
 ```
 
 Read
@@ -248,6 +254,19 @@ vault write sys/auth/xbs_first_auth type=userpass
 ### AppRole
 [Example 1: Via curl](https://learn.hashicorp.com/tutorials/vault/getting-started-apis?in=vault/getting-started)
 
+### AWS
+
+Enable
+```
+vault auth enable aws
+```
+
+Create `dev-role-iam` Vault role, that allows to auth with `burt-temporary-tests-vault-vault-client-role` AWS IAM role to provide `myapp` Vault policy
+```
+vault write auth/aws/role/dev-role-iam auth_type=iam bound_iam_principal_arn="arn:aws:iam::883994838493:role/burt-temporary-tests-vault-vault-client-role" policies=myapp ttl=24h
+```
+
+
 ### Token
 
 > **NOTE**: Here is only info how to use token you already have.
@@ -306,7 +325,7 @@ vault login -method=github
 
 ## Policy
 
-### General
+### List
 
 List all policies
 ```
@@ -324,7 +343,16 @@ curl \
   https://vault.hashicorp.rocks/v1/sys/policy
 ```
 
-Import policy from HCL file
+### Read
+
+Read `myapp` policy
+```
+vault policy read myapp
+```
+
+### Write
+
+Write policy from a `HCL` file
 ```
 # HCL file example
 #
