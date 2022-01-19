@@ -121,6 +121,8 @@ vault write -wrap-ttl=360s -force auth/approle/role/jenkins-role/secret-id
 ```
 
 Application then can use this `wrapping_token` to get real `SecretID`
+
+> **NOTE**: App should know, where to find Vault (via `VAULT_ADDR` var, for example) 
 ```
 VAULT_TOKEN="s.BW3oUqDf7iGg1x96fccfX5vp" vault unwrap
 
