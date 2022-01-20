@@ -61,11 +61,13 @@ In this example, you are going to create a role for the app persona (`jenkins` i
 
 #### 2.1.1. Policy
 
+> **NOTE**: For `kv-v2` secret engine `secret` -> `secret/data`
+
 Create an policy named `jenkins-policy`.
 ```
-vault policy write jenkins-policy -<<EOF
-# Read-only permission on secrets stored at 'secret/mysql/webapp'
-path "secret/mysql/webapp" {
+vault policy write jenkins -<<EOF
+# Read-only permission on secrets stored at 'secret/data/mysql/webapp'
+path "secret/data/mysql/webapp" {
   capabilities = [ "read" ]
 }
 EOF
