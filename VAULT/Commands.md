@@ -293,6 +293,15 @@ Retrieve the `RoleID` for the `jenkins-role` role
 ```
 # The `auth/approle/role/<ROLE_NAME>/role-id` endpoint provides `RoleID` (constant one for specific `Role`);
 
+# The constant one, randomly generated 
+vault read auth/approle/role/jenkins-role/role-id
+
+   # OR
+   
+# The constant one, which was customly defined
+#   Define
+vault write auth/approle/role/jenkins-role/role-id role_id=xbs-markets-live01
+#   Read
 vault read auth/approle/role/jenkins-role/role-id
 ```
 
@@ -342,7 +351,14 @@ Generate a `SecretID` for the `jenkins-role` role
 # If you specified `secret_id_ttl`, `secret_id_num_uses`, or `bound_cidr_list` on the step of Role creation,
 # the generated `SecretID` carries out the conditions.
 
+
+# Generate a randome one
 vault write -force auth/approle/role/jenkins-role/secret-id
+
+   # OR
+   
+# Set custom one (thus, static)
+vault write auth/approle/role/jenkins-role/custom-secret-id secret_id=xbs-pwd-olala-who-knows-it
 ```
 
 
