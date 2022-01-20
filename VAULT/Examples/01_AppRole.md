@@ -65,7 +65,7 @@ In this example, you are going to create a role for the app persona (`jenkins` i
 
 Create an policy named `jenkins-policy`.
 ```
-vault policy write jenkins -<<EOF
+vault policy write jenkins-policy -<<EOF
 # Read-only permission on secrets stored at 'secret/data/mysql/webapp'
 path "secret/data/mysql/webapp" {
   capabilities = [ "read" ]
